@@ -39,24 +39,21 @@ test('User could not publish article with empty fields', async ({ pm }) => {
     await pm.editorPage.titleShouldBeVisible();
 });
 
-test('User could add comment', async ({ page }) => {
-    let loginPage = new LoginPage(page);
-    let articlePage = new ArticlePage(page, ARTICLE_URL);
-    await loginPage.visit();
-    await loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
-    await loginPage.shouldBeEquals(DEFAULT_USER.name);
-    await articlePage.visit();
-    await articlePage.writeCommentAndPost('test');
-    await articlePage.shouldHaveComment('test');
+test('User could add comment', async ({ pm }) => {
+    let msg = faker.lorem.words()
+    await pm.loginPage.visit();
+    await pm.loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
+    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
+    await pm.articlePage.visitUrl(ARTICLE_URL);
+    await pm.articlePage.writeCommentAndPost(msg);
+    await pm.articlePage.shouldHaveComment(msg);
 });
 
-test('User could delete comment', async ({ page }) => {
-    let loginPage = new LoginPage(page);
-    let articlePage = new ArticlePage(page, '#/article/alter-test');
-    await loginPage.visit();
-    await loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
-    await loginPage.shouldBeEquals(DEFAULT_USER.name);
-    await articlePage.visit();
-    await articlePage.writeCommentAndPost('test_delete');
-    await articlePage.deleteComment();
+test('User could delete comment', async ({ pm }) => {
+    await pm.loginPage.visit();
+    await pm.loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
+    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
+    await pm.articlePage.visitUrl('#/article/alter-test');
+    await pm.articlePage.writeCommentAndPost('test_delete');
+    await pm.articlePage.deleteComment();
 });

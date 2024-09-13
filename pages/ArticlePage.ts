@@ -7,6 +7,7 @@ export class ArticlePage extends BasePage {
     private readonly postComment = this.page.getByRole("button", {name: "Post Comment"});
     private readonly deleteCommentBtn = this.page.locator('.btn-outline-secondary');
     private readonly cards = this.page.locator('.card-block');
+
     constructor(page: Page, url?: string) {
         super(page, url)
     }

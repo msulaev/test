@@ -13,6 +13,12 @@ export abstract class BasePage {
         })
     }
 
+    public async visitUrl(url: string) {
+        await test.step(`going to '${this.constructor.name}' by url ${url}`, async () => {
+            await this.page.goto(url, {waitUntil: 'networkidle'})
+        })
+    }
+
     public async shouldBeOpened() {
         await test.step(`Checking that ${this.constructor.name} opened with url ${this.url}`, async () => {
             await expect(this.page).toHaveURL(this.url)
