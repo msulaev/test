@@ -13,6 +13,7 @@ const ARTICLE_URL = '#/article/tot-patruus-alo';
 test.beforeEach(async ({ pm }) => {
     await pm.loginPage.visit();
     await pm.loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
+    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
 });
 
 test('User could publish article', async ({ pm }) => {
@@ -37,14 +38,12 @@ test('User could not publish article with empty fields', async ({ pm }) => {
 
 test('User could add comment', async ({ pm }) => {
     let msg = faker.lorem.words();
-    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
     await pm.articlePage.visitUrl(ARTICLE_URL);
     await pm.articlePage.writeCommentAndPost(msg);
     await pm.articlePage.shouldHaveComment(msg);
 });
 
 test('User could delete comment', async ({ pm }) => {
-    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
     await pm.articlePage.visitUrl('#/article/alter-test');
     await pm.articlePage.writeCommentAndPost('test_delete');
     await pm.articlePage.deleteComment();
