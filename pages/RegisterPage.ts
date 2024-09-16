@@ -1,4 +1,4 @@
-import {expect, Page, test} from "@playwright/test";
+import {Page, test} from "@playwright/test";
 import {BasePage} from "./BasePage";
 
 export class RegisterPage extends BasePage {
@@ -6,7 +6,7 @@ export class RegisterPage extends BasePage {
     private readonly usernameInp = this.page.locator('[name="username"]');
     private readonly emailInp = this.page.locator('[name="email"]');
     private readonly passwordTnp = this.page.locator('[name="password"]');
-    private readonly preview = this.page.locator('.article-preview');
+    public readonly preview = this.page.locator('.article-preview');
 
 
     constructor(page: Page) {
@@ -20,9 +20,5 @@ export class RegisterPage extends BasePage {
             await this.usernameInp.fill(username)
             await this.registerBtn.click()
         })
-    }
-
-    public async shouldBeOpened() {
-        await expect(this.preview).toHaveText('Articles not available.');
     }
 }

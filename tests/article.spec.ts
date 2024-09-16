@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { DEFAULT_USER } from "../helpers/constants";
-import { test } from "../fixtures/mainFixture";
+import {LoginPage} from "../pages/LoginPage";
+import {EditorPage} from "../pages/EditorPage";
+import {ArticlePage} from "../pages/ArticlePage";
+import {expect, test} from "@playwright/test";
 
 const ARTICLE = {
     title: faker.lorem.words(),
@@ -10,41 +13,52 @@ const ARTICLE = {
 const ERROR = 'Title already exists.. ';
 const ARTICLE_URL = '#/article/tot-patruus-alo';
 
-test.beforeEach(async ({ pm }) => {
-    await pm.loginPage.visit();
-    await pm.loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
-    await pm.loginPage.shouldBeEquals(DEFAULT_USER.name);
-});
+test.describe('Article', () => {
+    test.beforeEach(async ({page}) => {
+        let loginPage = new LoginPage(page);
+        await loginPage.visit();
+        await loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password);
+        await expect(loginPage.navigation).toContainText(DEFAULT_USER.name);
+    });
 
-test('User could publish article', async ({ pm }) => {
-    await pm.editorPage.clickOnNewArticle();
-    await pm.editorPage.createArticle(ARTICLE.title, ARTICLE.description, ARTICLE.body);
-    await pm.editorPage.clickOnPublish();
-    await pm.articlePage.shouldHaveTitle(ARTICLE.title);
-});
+    test('User could publish article', async ({page}) => {
+        let editorPage = new EditorPage(page);
+        let articlePage = new ArticlePage(page);
+        await editorPage.clickOnNewArticle();
+        await editorPage.createArticle(ARTICLE.title, ARTICLE.description, ARTICLE.body);
+        await editorPage.clickOnPublish();
+        await expect(articlePage.article).toHaveText(ARTICLE.title);
+    });
 
-test('User could not publish article with existing title', async ({ pm }) => {
-    await pm.editorPage.clickOnNewArticle();
-    await pm.editorPage.createArticle('test', ARTICLE.description, ARTICLE.body);
-    await pm.editorPage.clickOnPublish();
-    await pm.editorPage.shouldHaveError(ERROR);
-});
+    test('User could not publish article with existing title', async ({page}) => {
+        let editorPage = new EditorPage(page);
+        await editorPage.clickOnNewArticle();
+        await editorPage.createArticle('test', ARTICLE.description, ARTICLE.body);
+        await editorPage.clickOnPublish();
+        await expect(editorPage.errorMsg).toHaveText(ERROR);
+    });
 
-test('User could not publish article with empty fields', async ({ pm }) => {
-    await pm.editorPage.clickOnNewArticle();
-    await pm.editorPage.clickOnPublish();
-    await pm.editorPage.titleShouldBeVisible();
-});
+    test('User could not publish article with empty fields', async ({page}) => {
+        let editorPage = new EditorPage(page);
+        await editorPage.clickOnNewArticle();
+        await editorPage.clickOnPublish();
+        await expect(editorPage.titleInp).toBeVisible();
+    });
 
-test('User could add comment', async ({ pm }) => {
-    let msg = faker.lorem.words();
-    await pm.articlePage.visitUrl(ARTICLE_URL);
-    await pm.articlePage.writeCommentAndPost(msg);
-    await pm.articlePage.shouldHaveComment(msg);
-});
+    test('User could add comment', async ({page}) => {
+        let articlePage = new ArticlePage(page);
+        let msg = faker.lorem.words();
+        await articlePage.visitUrl(ARTICLE_URL);
+        await articlePage.writeCommentAndPost(msg);
+        await expect(page.getByText(msg, {exact: true})).toHaveText(msg);
+    });
 
-test('User could delete comment', async ({ pm }) => {
-    await pm.articlePage.visitUrl('#/article/alter-test');
-    await pm.articlePage.writeCommentAndPost('test_delete');
-    await pm.articlePage.deleteComment();
+    test('User could delete comment', async ({page}) => {
+        let articlePage = new ArticlePage(page);
+        await articlePage.visitUrl('#/article/alter-test');
+        await articlePage.writeCommentAndPost('test_delete');
+        await articlePage.deleteComment();
+        await expect(articlePage.cards).toHaveCount(1);
+
+    });
 });
