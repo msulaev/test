@@ -1,5 +1,6 @@
 import {Page, test} from "@playwright/test";
 import {BasePage} from "./BasePage";
+import {step} from "../helpers/allure";
 
 export class RegisterPage extends BasePage {
     private readonly registerBtn = this.page.getByRole('button', { name: 'Sign Up' });
@@ -13,6 +14,7 @@ export class RegisterPage extends BasePage {
         super(page, '#/register')
     }
 
+    @step('Register  user with Email: {0} and Password: {1} and Username: {2}')
     public async registerUser(email: string, password: string, username: string) {
         await test.step(`Register in with email ${email} and password ${password}`, async () => {
             await this.emailInp.fill(email)

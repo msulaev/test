@@ -13,7 +13,7 @@ export class EditorPage extends BasePage {
         super(page, '#/editor')
     }
 
-    @step('Create article')
+    @step('Create article with title: {0}, description: {1} and body: {2}')
     public async createArticle(title: string, description: string, body: string) {
         await this.titleInp.fill(title);
         await this.descriptionInp.fill(description);

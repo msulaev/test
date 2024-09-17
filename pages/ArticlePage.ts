@@ -13,7 +13,7 @@ export class ArticlePage extends BasePage {
         super(page, url)
     }
 
-    @step('Write comment and post it')
+    @step('Write comment: {0} and post it')
     public async writeCommentAndPost(comment: string) {
         await this.writeComment.fill(comment);
         await this.postComment.click();
