@@ -1,4 +1,5 @@
 import {expect, Page, test} from "@playwright/test";
+import {step} from "../helpers/allure";
 
 export abstract class BasePage {
     protected constructor(

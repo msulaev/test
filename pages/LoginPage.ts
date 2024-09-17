@@ -12,6 +12,7 @@ export class LoginPage extends BasePage {
         super(page, '#/login')
     }
 
+
     public async login(email: string, password: string) {
         await test.step(`Login in with email ${email} and password ${password}`, async () => {
             await this.emailInp.fill(email)

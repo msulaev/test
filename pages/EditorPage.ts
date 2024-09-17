@@ -1,5 +1,6 @@
 import {BasePage} from "./BasePage";
 import {Page} from "@playwright/test";
+import {step} from "../helpers/allure";
 
 export class EditorPage extends BasePage {
     private readonly newArticle = this.page.locator('a[href="#/editor"]');
@@ -12,16 +13,19 @@ export class EditorPage extends BasePage {
         super(page, '#/editor')
     }
 
+    @step('Create article')
     public async createArticle(title: string, description: string, body: string) {
         await this.titleInp.fill(title);
         await this.descriptionInp.fill(description);
         await this.bodyInp.fill(body);
     }
 
+    @step('Click on New Article')
     public async clickOnNewArticle() {
         await this.newArticle.click();
     }
 
+    @step('Click on Publish')
     public async clickOnPublish() {
         await this.publishBtn.click();
     }
