@@ -1,5 +1,6 @@
 import {Page} from "@playwright/test";
 import {BasePage} from "./BasePage";
+import {step} from "../helpers/allure";
 
 export class ArticlePage extends BasePage {
     public readonly article = this.page.locator('.container h1');
@@ -12,11 +13,13 @@ export class ArticlePage extends BasePage {
         super(page, url)
     }
 
+    @step('Write comment: {0} and post it')
     public async writeCommentAndPost(comment: string) {
         await this.writeComment.fill(comment);
         await this.postComment.click();
     }
 
+    @step('Delete comment')
     public async deleteComment() {
         this.page.on('dialog', dialog => {
             dialog.accept();
