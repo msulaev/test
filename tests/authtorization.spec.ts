@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {faker, PersonModule} from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 import {RegisterPage} from "../pages/RegisterPage";
 
 const USER = faker.person.firstName();
@@ -10,5 +10,5 @@ test('User could login with user and pwd', async ({ page }) => {
     let registerPage = new RegisterPage(page);
     await registerPage.visit();
     await registerPage.registerUser(EMAIL, PASSWORD, USER);
-    await registerPage.shouldBeOpened();
+    await expect(registerPage.preview).toHaveText('Articles not available.');
 });
